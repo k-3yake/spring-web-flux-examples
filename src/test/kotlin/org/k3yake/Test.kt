@@ -22,9 +22,7 @@ class Tests{
 
     @Test
     fun postTest(){
-        val city = City()
-        city.name = "name1"
-
+        val city = City("name1")
         webTestClient.post().uri("/city")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -38,8 +36,7 @@ class Tests{
 
     @Test
     fun getTest(){
-        val city = City()
-        city.name = "name1"
+        val city = City("name1")
 
         webTestClient.post().uri("/city")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

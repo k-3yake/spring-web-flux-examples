@@ -5,10 +5,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import org.springframework.stereotype.Repository
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
@@ -39,18 +36,33 @@ class CityController{
                 .map { i -> Collections.singletonMap("value", i) }
     }
 
-    @PostMapping("/city")
+    @PostMapping("/city/stream")
     fun postCity(@RequestBody city:City): Mono<City> {
         return this.cityRepository.save(city)
     }
+
+
+    @DeleteMapping("/city/flush")
+    fun flush(){
+        this.cityRepository.deleteAll().block()
+    }
+
+    @GetMapping("/city/count")
+    fun count(): Count {
+        return Count(this.cityRepository.count().block().toString())
+    }
 }
+
 
 
 @Repository
 interface CityRepository : ReactiveMongoRepository<City, String>
 
 @Document(collection = "cities")
-class City {
-    @Id
-    lateinit var name:String
+data class City(
+        @Id val name:String
+){
+    constructor():this("")
 }
+
+data class Count(val count:String)
